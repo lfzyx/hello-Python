@@ -1,5 +1,9 @@
 # python-simpletool
 
-python 小工具
+**jscompress.py** 
 
-jscompress.py jsfolder
+js压缩工具，调用jsmin
+
+`$python3 jscompress.py [js folder]`
+
+----
