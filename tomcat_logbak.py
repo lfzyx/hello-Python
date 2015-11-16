@@ -5,6 +5,7 @@ import datetime
 import shutil
 import sys
 import time
+import glob
 
 if len(sys.argv) < 3:
     print("Usage:",sys.argv[0], "[DIR tomcat0 tomcat1...]")
@@ -25,13 +26,12 @@ for project in sys.argv[2:]:
     else:
         print ('Successfully created directory:', targetdir)
 
-    for file in os.listdir(sourcedir):
-        #遍历源目录,找出文件,且文件的修改时间小于上个月最后一秒
-        if os.path.isfile(sourcedir + file) and file != "catalina.out" and os.path.getmtime(sourcedir + file) < time.mktime(datetime.date(day=1, month= datetime.datetime.today().month, year= datetime.datetime.today().year).timetuple()):
-            print(file)
+    for file in glob.glob(sourcedir + '*.[tlg]*'):
+        #遍历源目录,找出后缀为log,txt,gz的文件,且文件的修改时间小于上个月最后一秒
+        if  os.path.getmtime(file) < time.mktime(datetime.date(day=1, month= datetime.datetime.today().month, year= datetime.datetime.today().year).timetuple()):
             try:
-                shutil.move(sourcedir + file, targetdir)
+                shutil.move(file, targetdir)
             except shutil.Error:
                 print(sys.exc_info()[1])
             else:
-                print("Successfully moved file:",sourcedir + file)
+                print("Successfully moved file:", file)
