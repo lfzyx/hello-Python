@@ -1,0 +1,21 @@
+[docBase]
+path = /docBase/
+
+[push.properties]
+path = WEB-INF/classes/push.properties
+multiThread = true
+serverHost = smtp.test.com
+serverPort = 465
+validate = true
+
+
+
+[weixin.properties]
+path = WEB-INF/classes/weixin.properties
+weixinKey = xskxVn
+weixinAesKey = SPm0aCsDI
+weixinAesLastKey = SPm0aCsDIC4S
+weixinAppId = wxf883
+weixinToken = uI4J67aG
+weixinAppSecret = 25b20a3
+
