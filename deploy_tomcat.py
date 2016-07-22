@@ -15,7 +15,7 @@ if len(sys.argv) < 4:
     print("Usage:", sys.argv[0], "[config_path]", "[project]", "[tomcat]..")
     sys.exit(1)
 
-config_path = sys.argv[1] #deploy_tomcat.conf.sample
+config_path = sys.argv[1]  # deploy_tomcat.conf.sample
 project = sys.argv[2]
 tomcat = sys.argv[3:]
 count_of_project = len(tomcat)
@@ -31,13 +31,13 @@ class Config:
         return self.config_path
 
     def __get_sections__(self):
-        return self.cc.sections() #读取每个配置项
+        return self.cc.sections()  # 读取每个配置项
 
     def __get_optons__(self, sections):
-        return self.cc.options(sections) #读取配置项中的属性列表
+        return self.cc.options(sections)  # 读取配置项中的属性列表
 
     def __get_items__(self, sections, options):
-        return self.cc.get(sections, options) #读取属性对应的值
+        return self.cc.get(sections, options)  # 读取属性对应的值
 
 config = Config(config_path)
 docBase = config.__get_items__("docBase", "path")
