@@ -2,6 +2,7 @@
 import datetime
 import os.path
 import glob
+import sys
 
 
 def filelist(duration_days, files):
@@ -13,10 +14,18 @@ def filelist(duration_days, files):
 
     file_list = []
 
-    for log_file in glob.glob(files):
+    for log_file in sorted(glob.glob(files), key=os.path.getmtime):
         if firstday <= datetime.date.fromtimestamp(os.path.getmtime(log_file)) <= lastday:
             file_list.append(log_file)
 
     return file_list
+
+
+if __name__ == '__main__':
+    if len(sys.argv) < 3:
+        print("Usage:", sys.argv[0], "duration_days", "files" )
+        print("Example: 3-20 Downloads/*")
+        sys.exit(1)
+    print(filelist(sys.argv[1], sys.argv[2]))
 
 
