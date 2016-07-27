@@ -8,11 +8,6 @@ the class use to get config sections, options, items
 import configparser
 
 
-# def config(file):
-#     configfile = Config(file)
-#     from_addr = configfile.__get_items__("smtp", "from_addr")
-#     return from_addr
-
 class config:
     def __init__(self, file):
         self.configfile = file
