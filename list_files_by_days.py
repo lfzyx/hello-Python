@@ -4,6 +4,9 @@
 """
 list files by days to days
 
+import list_files_by_days
+list_files_by_days.filelist(3 20 Downloads/*)
+
 """
 import datetime
 import os.path
