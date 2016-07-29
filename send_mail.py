@@ -1,4 +1,13 @@
 #!/usr/bin/env python3
+# Author: lfzyx
+# Contact: lfzyx.me@gmail.com
+"""
+send mail with attachments
+
+import send_mail
+send_mail.attachment_content(mail.conf test access.log.19.gz access.log.18.gz)
+
+"""
 import sys
 import config
 from email.mime import text, multipart, base
@@ -7,6 +16,9 @@ import smtplib
 
 
 def smtp_send(mail_config, msg):
+    """
+    send mail by smtp
+    """
 
     configfile = config.config(mail_config)
 
@@ -22,6 +34,9 @@ def smtp_send(mail_config, msg):
 
 
 def text_content(mail_config, subject):
+    """
+    create MIME objects of major type text by email.mime.text.MIMEText class
+    """
 
     configfile = config.config(mail_config)
     from_addr = configfile.__get_items__("smtp", "from_addr")
@@ -37,6 +52,9 @@ def text_content(mail_config, subject):
 
 
 def attachment_content(mail_config, subject, files):
+    """
+    create base class for all the MIME-specific subclasses of Message by email.mime.base.MIMEBase class
+    """
 
     configfile = config.config(mail_config)
     from_addr = configfile.__get_items__("smtp", "from_addr")
@@ -66,7 +84,7 @@ def attachment_content(mail_config, subject, files):
 if __name__ == '__main__':
     if len(sys.argv) < 4:
         print("Usage:", sys.argv[0], "mail_config subject files")
-        print("Example: mail.conf Googlebot/2.1 access.log.19.gz access.log.18.gz ")
+        print("Example: mail.conf test access.log.19.gz access.log.18.gz")
         sys.exit(1)
 
     attachment_content(sys.argv[1],sys.argv[2],sys.argv[3:])
