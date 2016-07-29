@@ -5,7 +5,7 @@
 send mail with attachments
 
 import send_mail
-send_mail.attachment_content(mail.conf test access.log.19.gz access.log.18.gz)
+send_mail.attachment_content(mail.conf subject access.log.19.gz access.log.18.gz)
 
 """
 import sys
