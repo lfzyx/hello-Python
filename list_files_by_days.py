@@ -27,7 +27,7 @@ def days(firstday, lastday):
 
 def filelist(firstday, lastday, files):
     """
-    return the file modify time status < lastdate and > firstdate
+    return the file that modify time status < lastdate and > firstdate
     """
     firstdate, lastdate = days(firstday, lastday)
     file_list = []
