@@ -20,7 +20,7 @@ def smtp_send(mail_config, msg):
     send mail by smtp
     """
 
-    configfile = config.config(mail_config)
+    configfile = config.Config(mail_config)
 
     smtp_server = configfile.__get_items__("smtp", "smtp_server")
     from_addr = configfile.__get_items__("smtp", "from_addr")
@@ -38,7 +38,7 @@ def text_content(mail_config, subject):
     create MIME objects of major type text by email.mime.text.MIMEText class
     """
 
-    configfile = config.config(mail_config)
+    configfile = config.Config(mail_config)
     from_addr = configfile.__get_items__("smtp", "from_addr")
     to_addr = configfile.__get_items__("smtp", "to_addr")
 
@@ -56,7 +56,7 @@ def attachment_content(mail_config, subject, files):
     create base class for all the MIME-specific subclasses of Message by email.mime.base.MIMEBase class
     """
 
-    configfile = config.config(mail_config)
+    configfile = config.Config(mail_config)
     from_addr = configfile.__get_items__("smtp", "from_addr")
     to_addr = configfile.__get_items__("smtp", "to_addr")
 

@@ -8,7 +8,7 @@ the class use to get config sections, options, items
 import configparser
 
 
-class config:
+class Config:
     def __init__(self, file):
         self.configfile = file
         self.cc = configparser.ConfigParser()

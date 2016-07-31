@@ -46,5 +46,3 @@ if __name__ == '__main__':
         sys.exit(1)
 
     print(filelist(sys.argv[1], sys.argv[2], sys.argv[3]))
-
-
