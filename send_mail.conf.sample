@@ -2,4 +2,5 @@
 from_addr = test@test.com
 password = test
 to_addr = admin@test.com
+cc = cc@test.com
 smtp_server = smtp.exmail.test.com

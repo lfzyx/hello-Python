@@ -26,10 +26,11 @@ def smtp_send(mail_config, msg):
     from_addr = configfile.__get_items__("smtp", "from_addr")
     password = configfile.__get_items__("smtp", "password")
     to_addr = configfile.__get_items__("smtp", "to_addr")
+    cc = configfile.__get_items__("smtp", "cc")
 
     server = smtplib.SMTP(smtp_server, 25)
     server.login(from_addr, password)
-    server.send_message(msg, from_addr, [to_addr])
+    server.send_message(msg, from_addr, [to_addr]+[cc])
     server.quit()
 
 
@@ -41,12 +42,14 @@ def text_content(mail_config, subject):
     configfile = config.Config(mail_config)
     from_addr = configfile.__get_items__("smtp", "from_addr")
     to_addr = configfile.__get_items__("smtp", "to_addr")
+    cc = configfile.__get_items__("smtp", "cc")
 
     msg = text.MIMEText('<html><body><h1>lfzyx</h1><p>send by <a href="http://lfzyx.org">lfzyx</a></p>''</body></html>',
                         'html', 'utf-8')
     msg['To'] = to_addr
     msg['From'] = from_addr
     msg['Subject'] = subject
+    msg['CC'] = cc
 
     smtp_send(mail_config, msg)
 
@@ -59,11 +62,13 @@ def attachment_content(mail_config, subject, files):
     configfile = config.Config(mail_config)
     from_addr = configfile.__get_items__("smtp", "from_addr")
     to_addr = configfile.__get_items__("smtp", "to_addr")
+    cc = configfile.__get_items__("smtp", "cc")
 
     msg = multipart.MIMEMultipart()
     msg['To'] = to_addr
     msg['From'] = from_addr
     msg['Subject'] = subject
+    msg['CC'] = cc
 
     msg.attach(text.MIMEText('<html><body><p>send by <a href="http://lfzyx.org">lfzyx</a></p>''</body></html>',
                              'html', 'utf-8'))
