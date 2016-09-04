@@ -1,3 +1,6 @@
+[rootpath]
+path = /usr/local/share/
+
 [docBase]
 path = /docBase/
 

@@ -19,7 +19,8 @@ project = sys.argv[2]
 tomcat = sys.argv[3:]
 count_of_project = len(tomcat)
 
-configfile = config.config(config_path)
+configfile = config.Config(config_path)
+rootpath = configfile.__get_items__("rootpath", "path")
 docBase = configfile.__get_items__("docBase", "path")
 
 # 用 jenkins 产生的 jar 包会有时间命名，为了避免冲突，删除旧的 jar 包
