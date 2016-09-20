@@ -9,6 +9,7 @@ import time
 import subprocess
 import configparser
 import shutil
+import datetime
 
 if len(sys.argv) < 4:
     print("Usage:", sys.argv[0], "[config_path]", "[project]", "[tomcat]..")
@@ -23,6 +24,15 @@ config = configparser.ConfigParser()
 config.read(config_path)
 rootpath = config.get("rootpath", "path")
 docBase = config.get("docBase", "path")
+
+# 备份之前的工程
+dstname = "%s_%s" % (project, datetime.datetime.today().strftime("%Y%m%d%H%M"))
+try:
+    shutil.copytree(os.path.join(rootpath, docBase, project), os.path.join(rootpath, 'bakdocBase', dstname))
+except :
+    print(sys.exc_info()[1])
+else:
+    print("backup %s successful" % project)
 
 # 用 jenkins 产生的 jar 包会有时间命名，为了避免冲突，删除旧的 jar 包
 for jarfile in glob.glob(os.path.join(rootpath, docBase, project, 'WEB-INF/lib/') + '*.jar'):
