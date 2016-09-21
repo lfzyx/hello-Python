@@ -10,6 +10,8 @@ import subprocess
 import configparser
 import shutil
 import datetime
+import psutil
+
 
 if len(sys.argv) < 4:
     print("Usage:", sys.argv[0], "[config_path]", "[project]", "[tomcat]..")
@@ -29,7 +31,7 @@ docBase = config.get("docBase", "path")
 dstname = "%s_%s" % (project, datetime.datetime.today().strftime("%Y%m%d%H%M"))
 try:
     shutil.copytree(os.path.join(rootpath, docBase, project), os.path.join(rootpath, 'bakdocBase', dstname))
-except :
+except:
     print(sys.exc_info()[1])
 else:
     print("backup %s successful" % project)
@@ -64,6 +66,20 @@ for tomcat_T in tomcat:
     count_of_project -= 1
     subprocess.check_call(os.path.join(rootpath, tomcat_T, project, "bin/shutdown.sh"))
     time.sleep(5)
+    #检测tomcat是否关闭
+    for proc in psutil.process_iter():
+        pinfo = proc.as_dict(attrs=['pid', 'cmdline'])
+        if pinfo["cmdline"]:
+            for temp in pinfo["cmdline"]:
+                if tomcat_T + "/" + project in temp:
+                    try:
+                        proc.kill()
+                    except:
+                        print(sys.exc_info()[1])
+                    else:
+                        print("kill Process", pinfo["pid"], tomcat_T, project)
+                    finally:
+                        break
     subprocess.check_call(os.path.join(rootpath, tomcat_T, project, "bin/startup.sh"))
     if count_of_project > 0:
         time.sleep(50)
