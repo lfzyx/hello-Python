@@ -11,6 +11,7 @@ import configparser
 import shutil
 import datetime
 import psutil
+import distutils.dir_util
 
 
 if len(sys.argv) < 4:
@@ -24,13 +25,18 @@ count_of_project = len(tomcat)
 
 config = configparser.ConfigParser()
 config.read(config_path)
-rootpath = config.get("rootpath", "path")
+rootpath = config.get("tomcat", "path")
 docBase = config.get("docBase", "path")
+fileconfigpath = config.get("confile", "path")
+
+fileconfig = configparser.ConfigParser()
+fileconfig.read(fileconfigpath)
+
 
 # 备份之前的工程
 dstname = "%s_%s" % (project, datetime.datetime.today().strftime("%Y%m%d%H%M"))
 try:
-    shutil.copytree(os.path.join(rootpath, docBase, project), os.path.join(rootpath, 'bakdocBase', dstname))
+    distutils.dir_util.copy_tree(os.path.join(rootpath, docBase, project), os.path.join(rootpath, 'bakdocBase', dstname))
 except:
     print(sys.exc_info()[1])
 else:
@@ -43,29 +49,32 @@ for jarfile in glob.glob(os.path.join(rootpath, docBase, project, 'WEB-INF/lib/'
 warfile = zipfile.ZipFile(os.path.join(rootpath, docBase, project+".war", ))
 warfile.extractall(os.path.join(rootpath, docBase, project))
 
-for sections in config.sections():
+for sections in fileconfig.sections():
     '''
     获取不同配置文件的路径，然后把源复制到目标
     '''
+    dstpath = fileconfig.get(sections, "dstpath")
+    srcpath = fileconfig.get(sections, "srcpath")
+
     try:
-        dstpath = config.get(sections, "dstpath")
-        srcpath = config.get(sections, "srcpath")
-    except (configparser.Error,):
+        shutil.copy(os.path.join(srcpath, sections), os.path.join(dstpath, sections))
+    except (shutil.Error,  FileNotFoundError):
         print(sys.exc_info()[1])
-        print("如果异常与 rootpath docBase 有关，那就没事了")
-    else:
+    except (IsADirectoryError,):
         try:
-            shutil.copy(os.path.join(srcpath, sections), os.path.join(dstpath, sections))
-        except (shutil.Error, IsADirectoryError, FileNotFoundError):
+            distutils.dir_util.copy_tree(os.path.join(srcpath, sections), os.path.join(dstpath, sections), update=1)
+        except:
             print(sys.exc_info()[1])
         else:
             print("Move %s successful" % (sections,))
+    else:
+        print("Move %s successful" % (sections,))
 
 # 重启 tomcat 集群
 for tomcat_T in tomcat:
     count_of_project -= 1
     subprocess.check_call(os.path.join(rootpath, tomcat_T, project, "bin/shutdown.sh"))
-    time.sleep(5)
+    time.sleep(7)
     #检测tomcat是否关闭
     for proc in psutil.process_iter():
         pinfo = proc.as_dict(attrs=['pid', 'cmdline'])
@@ -82,4 +91,4 @@ for tomcat_T in tomcat:
                         break
     subprocess.check_call(os.path.join(rootpath, tomcat_T, project, "bin/startup.sh"))
     if count_of_project > 0:
-        time.sleep(50)
+        time.sleep(60)

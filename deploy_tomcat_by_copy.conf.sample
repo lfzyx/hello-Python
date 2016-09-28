@@ -1,0 +1,8 @@
+[tomcat]
+path = /Users/lfzyx/
+
+[docBase]
+path = /Users/lfzyx/docbase/
+
+[confile]
+path = /Users/lfzyx/config/config.conf

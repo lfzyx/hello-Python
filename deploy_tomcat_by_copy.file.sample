@@ -1,9 +1,3 @@
-[rootpath]
-path = /Users/lfzyx/Git/python-simpletool/
-
-[docBase]
-path = /Users/lfzyx/Git/python-simpletool/
-
 [jdbc.properties]
 srcpath = /Users/lfzyx/Git/python-simpletool/
 dstpath = /Users/lfzyx/Git/python-simpletool/conf/
@@ -15,3 +9,7 @@ dstpath = /Users/lfzyx/Git/python-simpletool/conf/
 [hx_config.properties]
 srcpath = /Users/lfzyx/Git/python-simpletool/
 dstpath = /Users/lfzyx/Git/python-simpletool/conf/
+
+[static]
+srcpath = /Users/lfzyx/Git/python-simpletool/tomcat1/
+dstpath = /Users/lfzyx/Git/tomcat2/
