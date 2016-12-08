@@ -42,9 +42,14 @@ except:
 else:
     print("backup %s successful" % project)
 
-# 用 jenkins 产生的 jar 包会有时间命名，为了避免冲突，删除旧的 jar 包
-for jarfile in glob.glob(os.path.join(rootpath, docBase, project, 'WEB-INF/lib/') + '*.jar'):
-    os.remove(jarfile)
+# 为了避免冲突，删除旧的工程包
+try:
+    distutils.dir_util.remove_tree(os.path.join(rootpath, docBase, project))
+except:
+    print(sys.exc_info()[1])
+else:
+    print("delete old %s successful" % project)
+
 
 warfile = zipfile.ZipFile(os.path.join(rootpath, docBase, project+".war", ))
 warfile.extractall(os.path.join(rootpath, docBase, project))
