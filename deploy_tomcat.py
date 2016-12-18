@@ -3,11 +3,13 @@
 
 import sys
 import zipfile
-import glob
+import datetime
 import os.path
 import time
 import subprocess
 import configparser
+import psutil
+import distutils.dir_util
 
 if len(sys.argv) < 4:
     print("Usage:", sys.argv[0], "[config_path]", "[project]", "[tomcat]..")
@@ -24,9 +26,22 @@ config.read(config_path)
 rootpath = config.get("rootpath", "path")
 docBase = config.get("docBase", "path")
 
-# 用 jenkins 产生的 jar 包会有时间命名，为了避免冲突，删除旧的 jar 包
-for jarfile in glob.glob(os.path.join(docBase, project, 'WEB-INF/lib/') + '*.jar'):
-    os.remove(jarfile)
+# 备份之前的工程
+dstname = "%s_%s" % (project, datetime.datetime.today().strftime("%Y%m%d%H%M"))
+try:
+    distutils.dir_util.copy_tree(os.path.join(rootpath, docBase, project), os.path.join(rootpath, 'bakdocBase', dstname))
+except:
+    print(sys.exc_info()[1])
+else:
+    print("backup %s successful" % project)
+
+# 为了避免冲突，删除旧的工程包
+try:
+    distutils.dir_util.remove_tree(os.path.join(rootpath, docBase, project))
+except:
+    print(sys.exc_info()[1])
+else:
+    print("delete old %s successful" % project)
 
 warfile = zipfile.ZipFile(os.path.join(docBase, project+".war", ))
 warfile.extractall(os.path.join(docBase, project))
@@ -57,7 +72,21 @@ for sections in config.sections():
 for tomcat_T in tomcat:
     count_of_project -= 1
     subprocess.check_call(os.path.join(rootpath, tomcat_T, project, "bin/shutdown.sh"))
-    time.sleep(5)            
+    time.sleep(7)
+    #检测tomcat是否关闭
+    for proc in psutil.process_iter():
+        pinfo = proc.as_dict(attrs=['pid', 'cmdline'])
+        if pinfo["cmdline"]:
+            for temp in pinfo["cmdline"]:
+                if tomcat_T + "/" + project in temp:
+                    try:
+                        proc.kill()
+                    except:
+                        print(sys.exc_info()[1])
+                    else:
+                        print("kill Process", pinfo["pid"], tomcat_T, project)
+                    finally:
+                        break
     subprocess.check_call(os.path.join(rootpath, tomcat_T, project, "bin/startup.sh"))
     if count_of_project > 0:
-        time.sleep(50)
+        time.sleep(60)
